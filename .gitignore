@@ -1,0 +1,7 @@
+Steps.md
+.venv/
+venv/
+.env
+gcloud_extract/
+Resumes/
+Misc/
