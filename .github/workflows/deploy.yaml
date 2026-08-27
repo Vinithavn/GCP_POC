@@ -1,0 +1,38 @@
+name: Deploy Streamlit to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: gcp-new-project-id
+  REGION: us-central1
+  SERVICE_NAME: streamlit-app
+  ARTIFACT_REPO: streamlit-repo
+  IMAGE_NAME: streamlit-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+
+      # 1. Checkout code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/173230660638/locations/global/workloadIdentityPools/github-access/providers/github-access'
+          service_account: 'github-access@gcp-new-project-506608.iam.gserviceaccount.com'
+
+      # 3. Setup gcloud
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
