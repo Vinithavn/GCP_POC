@@ -7,8 +7,8 @@ on:
       - devops
 
 env:
-  PROJECT_ID: gcp-new-project-id
-  REGION: us-central1
+  PROJECT_ID: gcp-new-project-506608
+  REGION: europe-west1
   SERVICE_NAME: streamlit-app
   ARTIFACT_REPO: streamlit-repo
   IMAGE_NAME: streamlit-app
@@ -37,3 +37,31 @@ jobs:
       # 3. Setup gcloud
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+
+      # 4. Create repository if it doesn't exist
+      - name: Create Artifact Registry repository if not exists
+        run: |
+          if gcloud artifacts repositories describe "${{ env.ARTIFACT_REPO }}" \
+            --location="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" > /dev/null 2>&1; then
+            echo "Artifact Registry repository already exists."
+          else
+            echo "Creating Artifact Registry repository..."
+            gcloud artifacts repositories create "${{ env.ARTIFACT_REPO }}" \
+              --repository-format=docker \
+              --location="${{ env.REGION }}" \
+              --project="${{ env.PROJECT_ID }}" \
+              --description="Docker repository for Streamlit application"
+          fi
+
+      # 5. Configure Docker
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      # 6. Build
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            ./src/backend
