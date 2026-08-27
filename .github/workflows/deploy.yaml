@@ -34,16 +34,17 @@ jobs:
           workload_identity_provider: 'projects/173230660638/locations/global/workloadIdentityPools/github-access/providers/github-access'
           service_account: 'github-access@gcp-new-project-506608.iam.gserviceaccount.com'
 
+      # 3. Check GCP identity
       - name: Check GCP identity
         run: |
           gcloud auth list
           gcloud config get-value project
-          
-      # 3. Setup gcloud
+
+      # 4. Setup gcloud
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      # 4. Create repository if it doesn't exist
+      # 5. Create repository if it doesn't exist
       - name: Create Artifact Registry repository if not exists
         run: |
           if gcloud artifacts repositories describe "${{ env.ARTIFACT_REPO }}" \
@@ -59,14 +60,30 @@ jobs:
               --description="Docker repository for Streamlit application"
           fi
 
-      # 5. Configure Docker
+      # 6. Configure Docker
       - name: Configure Docker
         run: |
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      # 6. Build
+      # 7. Build
       - name: Build Docker image
         run: |
           docker build \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             ./src/backend
+
+      # 7. Push image to Artifact Registry
+      - name: Push Docker image
+        run: |
+          docker push \
+            ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      # 8. Deploy to Cloud Run
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --port 8080 \
+            --allow-unauthenticated
