@@ -5,6 +5,14 @@ on:
     branches:
       - main
       - devops
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        type: choice
+        options:
+          - devops
 
 env:
   PROJECT_ID: gcp-new-project-506608
