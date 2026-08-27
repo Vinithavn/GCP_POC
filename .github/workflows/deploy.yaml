@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - devops
 
 env:
   PROJECT_ID: gcp-new-project-id

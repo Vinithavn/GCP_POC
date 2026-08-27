@@ -5,3 +5,4 @@ venv/
 gcloud_extract/
 Resumes/
 Misc/
+.DS_Store
