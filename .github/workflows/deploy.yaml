@@ -34,6 +34,11 @@ jobs:
           workload_identity_provider: 'projects/173230660638/locations/global/workloadIdentityPools/github-access/providers/github-access'
           service_account: 'github-access@gcp-new-project-506608.iam.gserviceaccount.com'
 
+      - name: Check GCP identity
+        run: |
+          gcloud auth list
+          gcloud config get-value project
+          
       # 3. Setup gcloud
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
