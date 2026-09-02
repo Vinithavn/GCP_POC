@@ -5,8 +5,8 @@ import pandas as pd
 import time
 
 # --- CONFIGURATION (UPDATE THESE!) ---
-PROJECT_ID = "project-f11574f8-4328-4d46-901"
-BUCKET_NAME = "auto-ai-summarizer"
+PROJECT_ID = "gcp-new-project-506608"
+BUCKET_NAME = "talent-ai-summarizer"
 
 # Initialize GCP Clients
 @st.cache_resource

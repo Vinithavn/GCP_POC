@@ -8,8 +8,8 @@ import json
 import datetime
 
 # --- CONFIGURATION ---
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "project-f11574f8-4328-4d46-901")
-REGION = "asia-south1"  # Vertex AI region
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "gcp-new-project-506608")
+REGION = "us-central1"  # Vertex AI region
 DATABASE_NAME = "jddatabase"  # Your custom Firestore database name
 
 # Initialize clients globally for performance (warm starts)
