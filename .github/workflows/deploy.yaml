@@ -90,20 +90,6 @@ jobs:
           docker push \
             ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.BACKEND_JOB_NAME }}:${{ github.sha }}
 
-      # 9. Deploy backend to Cloud Run Job      
-      # - name: Deploy backend to Cloud Run Job
-      #   run: |
-      #     # Check if the job already exists to decide whether to update or create
-      #     if gcloud run jobs describe ${{ env.BACKEND_JOB_NAME }} --region ${{ env.REGION }} &>/dev/null; then
-      #       gcloud run jobs update ${{ env.BACKEND_JOB_NAME }} \
-      #         --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.BACKEND_JOB_NAME }}:${{ github.sha }} \
-      #         --region ${{ env.REGION }}
-      #     else
-      #       gcloud run jobs create ${{ env.BACKEND_JOB_NAME }} \
-      #         --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.BACKEND_JOB_NAME }}:${{ github.sha }} \
-      #         --region ${{ env.REGION }}
-      #     fi
-
       # 9. Deploy backend to Cloud Run service
       - name: Deploy backend to Cloud Run service
         run: |
@@ -113,7 +99,7 @@ jobs:
             --platform managed \
             --port 8080 \
             --allow-unauthenticated
-            
+
       #  10. Build frontend image
       - name: Build Docker image
         run: |
